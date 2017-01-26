@@ -16,25 +16,27 @@ int main()
 
 		sf::Clock clock;
 		float timer = 0.0f;
-
+		TmxLevel lvl;
+		lvl.LoadFromFile("src/lvl0.tmx");
 		CCatPlayer cat({350.0f, 350.0f}, "src/cat.png");
-		CBarrier barrier(sf::FloatRect(200.0f, 200.0f, 100.0f, 100.0f));
-		TmxObject barrier1;
-		barrier1.rect = sf::FloatRect(200.0f, 200.0f, 100.0f, 100.0f);
-		std::vector<TmxObject> barriers{barrier1};
+
+		std::vector<TmxObject> barriers{};
 		sf::RenderWindow window(sf::VideoMode(800, 600), "Game", sf::Style::Close, settings);
+		sf::View view;
+		view.reset(sf::FloatRect(0, 0, 640, 480));
 
 		while (window.isOpen())
 		{
-			window.clear();
-
 			HandleEventsQueue(window, cat, barriers);
 
 			Update(clock, cat, timer);
+			window.setView(view);
+			window.clear();
 
-			barrier.Draw(window);
+			view.setCenter(cat.GetPosition());
+
+			lvl.Draw(window);
 			cat.Draw(window);
-
 			window.display();
 		}
 	}
