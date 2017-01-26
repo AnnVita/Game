@@ -17,7 +17,7 @@ int main()
 		sf::Clock clock;
 		float timer = 0.0f;
 
-		CCatPlayer cat({0.0f, 0.0f}, "src/cat.png");
+		CCatPlayer cat({350.0f, 350.0f}, "src/cat.png");
 		CBarrier barrier(sf::FloatRect(200.0f, 200.0f, 100.0f, 100.0f));
 		sf::RenderWindow window(sf::VideoMode(800, 600), "Game", sf::Style::Close, settings);
 
@@ -76,19 +76,15 @@ bool HandleKeypress(const sf::Event::KeyEvent & event, CCatPlayer & catPlayer, C
 	{
 		if (event.code == sf::Keyboard::Up)
 		{
-			catPlayer.MoveForward(Direction::UP);
+			catPlayer.MoveForward();
 		}
 		else if (event.code == sf::Keyboard::Left)
 		{
-			catPlayer.MoveForward(Direction::LEFT);
+			catPlayer.Rotate(-1*CAT_ROTATION_SPEED);
 		}
 		else if (event.code == sf::Keyboard::Right)
 		{
-			catPlayer.MoveForward(Direction::RIGHT);
-		}
-		else if (event.code == sf::Keyboard::Down)
-		{
-			catPlayer.MoveForward(Direction::DOWN);
+			catPlayer.Rotate(CAT_ROTATION_SPEED);
 		}
 		else
 			handled = false;

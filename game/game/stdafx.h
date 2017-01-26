@@ -16,14 +16,14 @@
 static const size_t MAX_HEALTH = 1000;
 static const std::string CAT_TEXTURE_FILE = "src/cat.png";
 static const sf::Vector2f CELL_SIZE{16, 16};
-static const float NORMAL_MOVE_STEP = 2.0f;
+static const float NORMAL_MOVE_STEP = 4.0f;
 static const float ITER_TIME = 0.1f;
 static const size_t ANIMATION_FRAMES_NUMBER = 8;
 static const float CAT_SPRITE_HEIGHT = CELL_SIZE.x * 2;
 static const float CAT_SPRITE_WIDTH = CELL_SIZE.x * 4;
-static const float CAT_ROTATION_SPEED = 4;
+static const float CAT_ROTATION_SPEED = 5;
 static const sf::Vector2f CAT_ORIGIN{CELL_SIZE.x * 2, CELL_SIZE.x};
-static const sf::Vector2f CAT_RECTANGLE_SIZE{CAT_SPRITE_WIDTH, CAT_SPRITE_HEIGHT - 12};
+static const sf::Vector2f CAT_RECTANGLE_SIZE{CAT_SPRITE_WIDTH, CAT_SPRITE_HEIGHT};
 
 enum class Direction
 {

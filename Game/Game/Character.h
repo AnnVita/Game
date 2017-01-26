@@ -16,7 +16,8 @@ public:
 	sf::Vector2f GetPosition() const;
 
 	void Move(const sf::Vector2f & moveParameters);
-	void MoveForward(Direction direction);
+	void MoveForward();
+	void Rotate(float angle);
 
 	virtual void Draw(sf::RenderTarget & target);
 	void UpdateAnimation();
@@ -29,6 +30,5 @@ private:
 	sf::Texture m_texture;
 	std::vector<sf::IntRect> m_animationFrames;
 	size_t m_currentAnimationFrame = 0;
-	Direction m_direction;
 	float m_speed;
 };

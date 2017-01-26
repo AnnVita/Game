@@ -88,7 +88,7 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <AdditionalIncludeDirectories>D:\Program Files\Visual Studio 2015\SFML-2.4.1-windows-vc14-64-bit\SFML-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <AdditionalIncludeDirectories>D:\Program Files\Visual Studio 2015\SFML-2.4.1-windows-vc14-64-bit\SFML-2.4.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -142,6 +142,7 @@
     <ClInclude Include="Barrier.h" />
     <ClInclude Include="CatPlayer.h" />
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="lib\tinyxml2\tinyxml2.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TmxLevel.h" />
