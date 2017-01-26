@@ -4,7 +4,7 @@
 class CCharacter
 {
 public:
-	CCharacter::CCharacter(const sf::Vector2f & startPoint, std::string spriteFileName, sf::Vector2f origin);
+	CCharacter(const sf::Vector2f & startPoint, std::string spriteFileName, sf::Vector2f rectangleSize, sf::Vector2f origin);
 	virtual ~CCharacter() = default;
 
 	sf::FloatRect GetRectangle() const;

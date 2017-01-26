@@ -23,6 +23,7 @@ static const float CAT_SPRITE_HEIGHT = CELL_SIZE.x * 2;
 static const float CAT_SPRITE_WIDTH = CELL_SIZE.x * 4;
 static const float CAT_ROTATION_SPEED = 4;
 static const sf::Vector2f CAT_ORIGIN{CELL_SIZE.x * 2, CELL_SIZE.x};
+static const sf::Vector2f CAT_RECTANGLE_SIZE{CAT_SPRITE_WIDTH, CAT_SPRITE_HEIGHT - 12};
 
 enum class Direction
 {

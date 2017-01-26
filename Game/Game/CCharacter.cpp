@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Character.h"
 
-CCharacter::CCharacter(const sf::Vector2f & startPoint, std::string spriteFileName, sf::Vector2f origin)
+CCharacter::CCharacter(const sf::Vector2f & startPoint, std::string spriteFileName, sf::Vector2f rectangleSize, sf::Vector2f origin = {0, 0})
 {
 	if (!m_texture.loadFromFile(spriteFileName))
 		throw std::domain_error("bad texture filename!");
@@ -10,13 +10,12 @@ CCharacter::CCharacter(const sf::Vector2f & startPoint, std::string spriteFileNa
 	FillAnimationContainer();
 	m_sprite.setTextureRect(m_animationFrames.front());
 	m_sprite.setPosition(startPoint);
+	m_sprite.setOrigin(origin);
 
 	m_rectangle.left = startPoint.x;
 	m_rectangle.top = startPoint.y;
-	m_rectangle.height = CELL_SIZE.y * 2;
-	m_rectangle.width = CELL_SIZE.x * 4;
-
-	m_sprite.setOrigin(origin);
+	m_rectangle.width = rectangleSize.x;
+	m_rectangle.height = rectangleSize.y;
 
 	m_speed = NORMAL_MOVE_STEP;
 	m_direction = Direction::RIGHT;
@@ -48,6 +47,11 @@ bool CCharacter::CheckCollision(sf::Vector2f position, sf::Vector2f size) const
 		return false;
 }
 
+bool CCharacter::CheckCollision(sf::FloatRect rectangle) const
+{
+	return CheckCollision({ rectangle.left, rectangle.top }, { rectangle.width, rectangle.height });
+}
+
 sf::Vector2f CCharacter::GetPosition() const
 {
 	return m_sprite.getPosition();
@@ -56,8 +60,6 @@ sf::Vector2f CCharacter::GetPosition() const
 void CCharacter::Move(const sf::Vector2f & moveParameters)
 {
 	m_sprite.move(moveParameters);
-	m_rectangle.left += moveParameters.x;
-	m_rectangle.top += moveParameters.y;
 }
 
 void CCharacter::MoveForward(Direction direction)
