@@ -15,7 +15,8 @@ public:
 
 	sf::Vector2f GetPosition() const;
 
-	void Move(const sf::Vector2f & moveParameters);
+	bool TryMoveForward(const std::vector<TmxObject> & barriers);
+	bool TryRotate(const std::vector<TmxObject> & barriers, float angle);
 	void MoveForward();
 	void Rotate(float angle);
 
@@ -24,6 +25,8 @@ public:
 
 private:
 	void FillAnimationContainer();
+	void Move(const sf::Vector2f & moveParameters);
+	static sf::Vector2f GetMovingForvardParameters(float angle, float speed);
 
 	sf::FloatRect m_rectangle;
 	sf::Sprite m_sprite;

@@ -18,7 +18,6 @@ CCharacter::CCharacter(const sf::Vector2f & startPoint, std::string spriteFileNa
 	m_rectangle.height = rectangleSize.y;
 
 	m_speed = NORMAL_MOVE_STEP;
-	m_direction = Direction::RIGHT;
 }
 
 sf::FloatRect CCharacter::GetRectangle() const
@@ -33,18 +32,12 @@ sf::Sprite CCharacter::GetSprite() const
 
 bool CCharacter::CheckCollision(sf::Vector2f position, sf::Vector2f size) const
 {
-	if (m_direction == Direction::UP || m_direction == Direction::DOWN)
-	{
-		return (!((m_sprite.getPosition().x + m_rectangle.height/2 < position.x || m_sprite.getPosition().x - m_rectangle.height/2 > position.x + size.x)
-			|| (m_sprite.getPosition().y + m_rectangle.width/2 < position.y || m_sprite.getPosition().y - m_rectangle.width/2 > position.y + size.y)));
-	}
-	else if (m_direction == Direction::RIGHT || m_direction == Direction::LEFT)
-	{
-		return (!((m_sprite.getPosition().x + m_rectangle.width/2 < position.x || m_sprite.getPosition().x - m_rectangle.width/2 > position.x + size.x)
-			|| (m_sprite.getPosition().y + m_rectangle.height/2 < position.y || m_sprite.getPosition().y - m_rectangle.height/2 > position.y + size.y)));
-	}
-	else
-		return false;
+	return (!(
+		m_sprite.getPosition().x + (m_rectangle.width / 2)*cos(m_sprite.getRotation() * static_cast<float>(M_PI) / 180) < position.x
+		|| m_sprite.getPosition().x + (m_rectangle.width / 2)*cos(m_sprite.getRotation() * static_cast<float>(M_PI) / 180) > position.x + size.x
+		|| m_sprite.getPosition().y + (m_rectangle.width / 2)*sin(m_sprite.getRotation() * static_cast<float>(M_PI) / 180) < position.y
+		|| m_sprite.getPosition().y + (m_rectangle.width / 2)*sin(m_sprite.getRotation() * static_cast<float>(M_PI) / 180) > position.y + size.y
+		));
 }
 
 bool CCharacter::CheckCollision(sf::FloatRect rectangle) const
@@ -62,29 +55,42 @@ void CCharacter::Move(const sf::Vector2f & moveParameters)
 	m_sprite.move(moveParameters);
 }
 
-void CCharacter::MoveForward(Direction direction)
+bool CCharacter::TryMoveForward(const std::vector<TmxObject> & barriers)
 {
-	m_direction = direction;
-	if (direction == Direction::UP)
+	CCharacter temp = *this;
+	temp.MoveForward();
+	bool wasCollision = false;
+	for (size_t i = 0; i < barriers.size() && !wasCollision; ++i)
 	{
-		m_sprite.setRotation(-90);
-		Move({ 0.0f, -m_speed });
+		wasCollision = temp.CheckCollision(barriers[i].rect);
 	}
-	else if (direction == Direction::DOWN)
+	if (!wasCollision)
+		this->MoveForward();
+	return wasCollision;
+}
+
+bool CCharacter::TryRotate(const std::vector<TmxObject> & barriers, float angle)
+{
+	CCharacter temp = *this;
+	temp.Rotate(angle);
+	bool wasCollision = false;
+	for (size_t i = 0; i < barriers.size() && !wasCollision; ++i)
 	{
-		m_sprite.setRotation(90);
-		Move({ 0.0f, m_speed });
+		wasCollision = temp.CheckCollision(barriers[i].rect);
 	}
-	else if (direction == Direction::LEFT)
-	{
-		m_sprite.setRotation(180);
-		Move({ -1 * m_speed, 0.0f });
-	}
-	else if (direction == Direction::RIGHT)
-	{
-		m_sprite.setRotation(0);
-		Move({ m_speed, 0.0f });
-	}
+	if (!wasCollision)
+		this->Rotate(angle);
+	return wasCollision;
+}
+
+sf::Vector2f CCharacter::GetMovingForvardParameters(float angle, float speed)
+{
+	return { speed*cos(angle * static_cast<float>(M_PI) / 180), speed*sin(angle * static_cast<float>(M_PI) / 180) };
+}
+
+void CCharacter::MoveForward()
+{
+	m_sprite.move(GetMovingForvardParameters(m_sprite.getRotation(), m_speed));
 }
 
 void CCharacter::Draw(sf::RenderTarget & target)
@@ -115,4 +121,9 @@ void CCharacter::UpdateAnimation()
 		std::reverse(m_animationFrames.begin(), m_animationFrames.end());
 	}
 	m_sprite.setTextureRect(m_animationFrames[m_currentAnimationFrame]);
+}
+
+void CCharacter::Rotate(float angle)
+{
+	m_sprite.rotate(angle);
 }

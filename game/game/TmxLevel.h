@@ -5,60 +5,63 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
-// Р’ РєР°СЂС‚Р°С… TMX РѕР±СЉРµРєС‚ - СЌС‚Рѕ РѕР±Р»Р°СЃС‚СЊ РЅР° РєР°СЂС‚Рµ, РёРјРµСЋС‰Р°СЏ РёРјСЏ, С‚РёРї,
-//  РіСЂР°РЅРёС†С‹, РЅР°Р±РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёС… СЃРІРѕР№СЃС‚РІ (РІ С„РѕСЂРјР°С‚Рµ РєР»СЋС‡-Р·РЅР°С‡РµРЅРёРµ)
-//  Рё С‚РµРєСЃС‚СѓСЂРЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹.
-// РўРµРєСЃС‚СѓСЂРЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ РїРѕР·РІРѕР»СЏСЋС‚ СЃРІСЏР·Р°С‚СЊ СЃ РѕР±СЉРµРєС‚РѕРј СЃРїСЂР°Р№С‚,
-//  РёСЃРїРѕР»СЊР·СѓСЋС‰РёР№ РѕСЃРЅРѕРІРЅСѓСЋ С‚РµРєСЃС‚СѓСЂСѓ РєР°СЂС‚С‹ РєР°Рє РёСЃС‚РѕС‡РЅРёРє РґР°РЅРЅС‹С….
+// В картах TMX объект - это область на карте, имеющая имя, тип,
+//  границы, набор пользовательских свойств (в формате ключ-значение)
+//  и текстурные координаты.
+// Текстурные координаты позволяют связать с объектом спрайт,
+//  использующий основную текстуру карты как источник данных.
 struct TmxObject
 {
-    int GetPropertyInt(std::string name);
-    float GetPropertyFloat(std::string name);
-    std::string GetPropertyString(std::string name);
+	int GetPropertyInt(std::string propertyName);
+	float GetPropertyFloat(std::string propertyName);
+	std::string GetPropertyString(std::string propertyName);
 
-    void MoveBy(const sf::Vector2f &movement);
-    void MoveTo(const sf::Vector2f &position);
+	void MoveBy(const sf::Vector2f & movement);
+	void MoveTo(const sf::Vector2f & position);
 
-    std::string name;
-    std::string type;
-    sf::IntRect rect;
-    std::map<std::string, std::string> properties;
+	std::string name;
+	std::string type;
+	sf::FloatRect rect;
+	std::map<std::string, std::string> properties;
 
 	sf::Sprite sprite;
 };
 
-// Р’ РєР°СЂС‚Р°С… TMX СЃР»РѕР№ - СЌС‚Рѕ РЅР°Р±РѕСЂ С‚Р°Р№Р»РѕРІ (СЃРїСЂР°Р№С‚РѕРІ),
-//  РёР· РєРѕС‚РѕСЂС‹С… СЃРєР»Р°РґС‹РІР°РµС‚СЃСЏ Р»Р°РЅРґС€Р°С„С‚ РєР°СЂС‚С‹.
-// РЎР»РѕС‘РІ РјРѕР¶РµС‚ Р±С‹С‚СЊ РЅРµСЃРєРѕР»СЊРєРѕ, С‡С‚Рѕ РїРѕР·РІРѕР»СЏРµС‚ РЅР°СЂРёСЃРѕРІР°С‚СЊ,
-//  РЅР°РїСЂРёРјРµСЂ, СЃР»РѕР№ С‚СЂР°РІС‹ РїРѕРІРµСЂС… СЃР»РѕСЏ Р·РµРјР»Рё.
+// В картах TMX слой - это набор тайлов (спрайтов),
+//  из которых складывается ландшафт карты.
+// Слоёв может быть несколько, что позволяет нарисовать,
+//  например, слой травы поверх слоя земли.
 struct TmxLayer
 {
-    int opacity = 0;
-    std::vector<sf::Sprite> tiles;
+	sf::Uint8 opacity = 0;
+	std::vector<sf::Sprite> tiles;
 };
 
 class TmxLevel
 {
 public:
-    // Р—Р°РіСЂСѓР¶Р°РµС‚ РґР°РЅРЅС‹Рµ РёР· TMX РІ РїР°РјСЏС‚СЊ РѕР±СЉРµРєС‚Р°.
-    bool LoadFromFile(const std::string &filepath);
+	// Загружает данные из TMX в память объекта.
+	bool LoadFromFile(const std::string & filepath);
 
-    TmxObject GetFirstObject(const std::string &name)const;
-    std::vector<TmxObject> GetAllObjects(const std::string &name)const;
-    sf::Vector2i GetTileSize()const;
+	TmxObject GetFirstObject(const std::string & name) const;
+	std::vector<TmxObject> GetAllObjects(const std::string & name) const;
+	sf::Vector2i GetTileSize()const;
+	float GetTilemapWidth()const;
+	float GetTilemapHeight()const;
+	sf::Vector2f GetTilemapSize()const;
 
-    // Р РёСЃСѓРµС‚ РІСЃРµ СЃР»РѕРё С‚Р°Р№Р»РѕРІ РѕРґРёРЅ Р·Р° РґСЂСѓРіРёРј,
-    //  РЅРѕ РЅРµ СЂРёСЃСѓРµС‚ РѕР±СЉРµРєС‚С‹ (СЂРёСЃРѕРІР°РЅРёРµРј РєРѕС‚РѕСЂС‹С… РґРѕР»Р¶РЅР° Р·Р°РЅРёРјР°С‚СЊСЃСЏ РёРіСЂР°).
-    // РџСЂРёРЅРёРјР°РµС‚ Р»СЋР±СѓСЋ С†РµР»СЊ РґР»СЏ СЂРёСЃРѕРІР°РЅРёСЏ, РЅР°РїСЂРёРјРµСЂ, sf::RenderWindow.
-    void Draw(sf::RenderTarget &target)const;
+	// Рисует все слои тайлов один за другим,
+	//  но не рисует объекты (рисованием которых должна заниматься игра).
+	// Принимает любую цель для рисования, например, sf::RenderWindow.
+	void Draw(sf::RenderTarget & target)const;
 
 private:
-    int m_width = 0;
-    int m_height = 0;
-    int m_tileWidth = 0;
-    int m_tileHeight = 0;
-    int m_firstTileID = 0;
-    sf::Texture m_tilesetImage;
-    std::vector<TmxObject> m_objects;
-    std::vector<TmxLayer> m_layers;
+	int m_width = 0;
+	int m_height = 0;
+	int m_tileWidth = 0;
+	int m_tileHeight = 0;
+	int m_firstTileID = 0;
+	sf::Texture m_tilesetImage;
+	std::vector<TmxObject> m_objects;
+	std::vector<TmxLayer> m_layers;
 };

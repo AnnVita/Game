@@ -3,8 +3,8 @@
 #include "CatPlayer.h"
 #include "Barrier.h"
 
-void HandleEventsQueue(sf::RenderWindow & window, CCatPlayer & catPlayer, CBarrier & barrier);
-bool HandleKeypress(const sf::Event::KeyEvent & event, CCatPlayer & catPlayer, CBarrier & barrier);
+void HandleEventsQueue(sf::RenderWindow & window, CCatPlayer & catPlayer, std::vector<TmxObject> & barriers);
+bool HandleKeypress(const sf::Event::KeyEvent & event, CCatPlayer & catPlayer, std::vector<TmxObject> & barriers);
 void Update(sf::Clock & clock, CCatPlayer & catPlayer, float & gameTime);
 
 int main()
@@ -19,13 +19,16 @@ int main()
 
 		CCatPlayer cat({350.0f, 350.0f}, "src/cat.png");
 		CBarrier barrier(sf::FloatRect(200.0f, 200.0f, 100.0f, 100.0f));
+		TmxObject barrier1;
+		barrier1.rect = sf::FloatRect(200.0f, 200.0f, 100.0f, 100.0f);
+		std::vector<TmxObject> barriers{barrier1};
 		sf::RenderWindow window(sf::VideoMode(800, 600), "Game", sf::Style::Close, settings);
 
 		while (window.isOpen())
 		{
 			window.clear();
 
-			HandleEventsQueue(window, cat, barrier);
+			HandleEventsQueue(window, cat, barriers);
 
 			Update(clock, cat, timer);
 
@@ -43,7 +46,7 @@ int main()
 	return EXIT_SUCCESS;
 }
 
-void HandleEventsQueue(sf::RenderWindow & window, CCatPlayer & catPlayer, CBarrier & barrier)
+void HandleEventsQueue(sf::RenderWindow & window, CCatPlayer & catPlayer, std::vector<TmxObject> & barriers)
 {
 	sf::Event event;
 	while (window.pollEvent(event))
@@ -52,7 +55,7 @@ void HandleEventsQueue(sf::RenderWindow & window, CCatPlayer & catPlayer, CBarri
 			window.close();
 		else if ((event.type == sf::Event::KeyPressed))
 		{
-			HandleKeypress(event.key, catPlayer, barrier);
+			HandleKeypress(event.key, catPlayer, barriers);
 		}
 	}
 }
@@ -69,25 +72,20 @@ void Update(sf::Clock & clock, CCatPlayer & catPlayer, float & gameTime)
 	}
 }
 
-bool HandleKeypress(const sf::Event::KeyEvent & event, CCatPlayer & catPlayer, CBarrier & barrier)
+bool HandleKeypress(const sf::Event::KeyEvent & event, CCatPlayer & catPlayer, std::vector<TmxObject> & barriers)
 {
 	bool handled = true;
-	if (!catPlayer.CheckCollision(barrier.GetLocation(), barrier.GetSize()))
+	if (event.code == sf::Keyboard::Up)
 	{
-		if (event.code == sf::Keyboard::Up)
-		{
-			catPlayer.MoveForward();
-		}
-		else if (event.code == sf::Keyboard::Left)
-		{
-			catPlayer.Rotate(-1*CAT_ROTATION_SPEED);
-		}
-		else if (event.code == sf::Keyboard::Right)
-		{
-			catPlayer.Rotate(CAT_ROTATION_SPEED);
-		}
-		else
-			handled = false;
+		catPlayer.TryMoveForward(barriers);
+	}
+	else if (event.code == sf::Keyboard::Left)
+	{
+		catPlayer.TryRotate(barriers, -1*CAT_ROTATION_SPEED);
+	}
+	else if (event.code == sf::Keyboard::Right)
+	{
+		catPlayer.TryRotate(barriers, CAT_ROTATION_SPEED);
 	}
 	else
 		handled = false;
