@@ -23,18 +23,17 @@ int main()
 		std::vector<TmxObject> barriers{};
 		sf::RenderWindow window(sf::VideoMode(800, 600), "Game", sf::Style::Close, settings);
 		sf::View view;
-		view.reset(sf::FloatRect(0, 0, 640, 480));
-
+		view.reset(sf::FloatRect(0, 0, 800, 600));
+		view.zoom(1);
 		while (window.isOpen())
 		{
 			HandleEventsQueue(window, cat, barriers);
 
 			Update(clock, cat, timer);
-			window.setView(view);
 			window.clear();
+			window.setView(view);
 
 			view.setCenter(cat.GetPosition());
-
 			lvl.Draw(window);
 			cat.Draw(window);
 			window.display();

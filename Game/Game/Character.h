@@ -27,6 +27,7 @@ private:
 	void FillAnimationContainer();
 	void Move(const sf::Vector2f & moveParameters);
 	static sf::Vector2f GetMovingForvardParameters(float angle, float speed);
+	static CheckCollision(sf::Vector2f & firstBodyPosition, sf::Vector2f & firstBodySize, float firstBodyRotationAngle, const sf::FloatRect & rect);
 
 	sf::FloatRect m_rectangle;
 	sf::Sprite m_sprite;
